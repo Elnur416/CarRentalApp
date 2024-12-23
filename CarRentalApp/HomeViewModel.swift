@@ -13,8 +13,10 @@ class HomeViewModel {
     private let managerCategory = CoreDataForCategory(context: AppDelegate().persistentContainer.viewContext)
     var category = [CategoryList]()
     var cars = [CarList]()
-    let carDatas = CarDatas()
+    private let carDatas = CarDatas()
     let manager = UserDefaultsManager()
+    var isSearchActive: Bool = false
+    var searchedCar = [CarList]()
     
     func getCategoryData() {
             managerCategory.fetchData(completion: { data in

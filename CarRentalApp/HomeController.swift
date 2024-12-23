@@ -8,28 +8,27 @@
 import UIKit
 
 class HomeController: UIViewController {
-    @IBOutlet weak var search: UISearchBar!
+    
     @IBOutlet weak var collection1: UICollectionView!
     @IBOutlet weak var collection2: UICollectionView!
-    
+ 
     let viewModel = HomeViewModel()
-    
+    let searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loadData()
-        configureSearch()
         configureLayout1()
         configureLayout2()
         viewModel.getCarData()
         viewModel.getCategoryData()
+        searchConfigure()
     }
     
-    func configureSearch() {
-        search.layer.cornerRadius = 30
-        search.layer.frame.size.height = 60
-        search.layer.masksToBounds = true
+    func searchConfigure() {
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
     }
     
     func configureLayout1() {
@@ -72,7 +71,11 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate, 
         if collectionView == self.collection1 {
             viewModel.category.count
         } else {
-            viewModel.cars.count
+            if viewModel.isSearchActive {
+                viewModel.searchedCar.count
+            } else {
+                viewModel.cars.count
+            }
         }
     }
     
@@ -85,11 +88,19 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate, 
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Collection2Cell", for: indexPath) as! Collection2Cell
-            cell.configure(brand: viewModel.cars[indexPath.row].brand ?? "",
-                           model: viewModel.cars[indexPath.row].name ?? "",
-                           carPrice: viewModel.cars[indexPath.row].price ?? "",
-                           engine: viewModel.cars[indexPath.row].engine ?? "",
-                           image: viewModel.cars[indexPath.row].image ?? "")
+            if viewModel.isSearchActive {
+                cell.configure(brand: viewModel.searchedCar[indexPath.row].category ?? "",
+                               model: viewModel.searchedCar[indexPath.row].name ?? "",
+                               carPrice: viewModel.searchedCar[indexPath.row].price ?? "",
+                               engine: viewModel.searchedCar[indexPath.row].engine ?? "",
+                               image: viewModel.searchedCar[indexPath.row].image ?? "")
+            } else {
+                cell.configure(brand: viewModel.cars[indexPath.row].category ?? "",
+                               model: viewModel.cars[indexPath.row].name ?? "",
+                               carPrice: viewModel.cars[indexPath.row].price ?? "",
+                               engine: viewModel.cars[indexPath.row].engine ?? "",
+                               image: viewModel.cars[indexPath.row].image ?? "")
+            }
             return cell
         }
     }
@@ -98,9 +109,33 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate, 
         if collectionView == self.collection1 {
             .init(width: collectionView.frame.width / 3, height: 150)
         } else {
-            .init(width: collectionView.frame.width / 1 - 80, height: 400)
+            .init(width: collectionView.frame.width / 1 - 80, height: 380)
         }
     }
 }
 
-
+extension HomeController: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.isSearchActive = false
+        collection1.isHidden = false
+        collection1.reloadData()
+        collection2.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.isSearchActive = true
+        collection1.isHidden = true
+        if searchText.isEmpty {
+            collection2.reloadData()
+        } else {
+            viewModel.searchedCar = viewModel.cars.filter({ $0.category?.contains(searchText) ?? false })
+            collection2.reloadData()
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.isSearchActive = true
+        collection1.isHidden = true
+    }
+}
