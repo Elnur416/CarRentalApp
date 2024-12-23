@@ -20,7 +20,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="358" height="398"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="car" translatesAutoresizingMaskIntoConstraints="NO" id="ZpX-zk-1ty">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZpX-zk-1ty">
                         <rect key="frame" x="20" y="198" width="318" height="200"/>
                     </imageView>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NLG-Wu-Xg7">
@@ -97,15 +97,19 @@
             </constraints>
             <size key="customSize" width="358" height="398"/>
             <connections>
+                <outlet property="brandName" destination="Rzd-z8-xeK" id="DBH-EQ-iXV"/>
+                <outlet property="carImage" destination="ZpX-zk-1ty" id="cLX-Bs-QWA"/>
+                <outlet property="engineModel" destination="jkT-IE-b2A" id="bPT-1p-eKS"/>
+                <outlet property="modelName" destination="gIY-D2-Q95" id="0r9-gP-a0C"/>
+                <outlet property="price" destination="VwV-fy-MbI" id="K0E-oV-e6P"/>
                 <outlet property="view" destination="awS-md-NKl" id="uUk-H7-8ye"/>
             </connections>
             <point key="canvasLocation" x="47.328244274809158" y="667.6056338028169"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="car" width="731" height="318"/>
         <systemColor name="tableCellBlueTextColor">
-            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
