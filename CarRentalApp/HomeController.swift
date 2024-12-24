@@ -9,52 +9,70 @@ import UIKit
 
 class HomeController: UIViewController {
     
-    @IBOutlet weak var collection1: UICollectionView!
-    @IBOutlet weak var collection2: UICollectionView!
+    @IBOutlet weak var searchTxt: UITextField!
+    @IBOutlet weak var collection: UICollectionView!
+    
  
     let viewModel = HomeViewModel()
-    let searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loadData()
-        configureLayout1()
-        configureLayout2()
+        configureLayout()
         viewModel.getCarData()
-        viewModel.getCategoryData()
+//        viewModel.getCategoryData()
         searchConfigure()
     }
     
+    @IBAction func searchHandler(_ sender: UITextField) {
+        viewModel.isSearchActive = true
+        if let searchText = sender.text, !searchText.isEmpty {
+            viewModel.searchedCar = viewModel.cars.filter({ $0.category?.lowercased().contains(searchText.lowercased()) ?? false})
+            collection.reloadData()
+        } else {
+            viewModel.isSearchActive = false
+            collection.reloadData()
+        }
+    }
+    
+    
     func searchConfigure() {
-        searchController.searchBar.delegate = self
-        navigationItem.searchController = searchController
+        searchTxt.borderStyle = .none
+        searchTxt.layer.cornerRadius = 30
+        searchTxt.backgroundColor = .white
+        searchTxt.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 60))
+        searchTxt.leftViewMode = .always
+        searchTxt.placeholder = "Search for a car"
+        addRightIconToTextField(txtfield: searchTxt)
     }
     
-    func configureLayout1() {
-        collection1.dataSource = self
-        collection1.delegate = self
-        collection1.register(UINib(nibName: "Collection1Cell", bundle: nil), forCellWithReuseIdentifier: "Collection1Cell")
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 150, height: 150)
-        layout.minimumLineSpacing = 40
-        layout.minimumInteritemSpacing = 40
-        layout.scrollDirection = .horizontal
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 40, bottom: 20, right: 40)
-        collection1.collectionViewLayout = layout
+    func addRightIconToTextField(txtfield: UITextField) {
+        let rightIcon = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+        rightIcon.tintColor = .lightGray
+        rightIcon.image = UIImage(systemName: "magnifyingglass")
+        let rightView = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        rightView.addSubview(rightIcon)
+        searchTxt.rightViewMode = .always
+        searchTxt.rightView = rightView
     }
     
-    func configureLayout2() {
-        collection2.dataSource = self
-        collection2.delegate = self
-        collection2.register(UINib(nibName: "Collection2Cell", bundle: nil), forCellWithReuseIdentifier: "Collection2Cell")
+    func configureLayout() {
+        title = "Car Rental"
+        collection.dataSource = self
+        collection.delegate = self
+        collection.register(UINib(nibName: "Collection2Cell", bundle: nil),
+                            forCellWithReuseIdentifier: "Collection2Cell")
+//        collection.register(HeaderCollectionView.self,
+//                            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+//                            withReuseIdentifier: HeaderCollectionView.identifier)
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 150, height: 150)
         layout.minimumLineSpacing = 40
         layout.minimumInteritemSpacing = 40
         layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 40, bottom: 20, right: 40)
-        collection2.collectionViewLayout = layout
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 40, bottom: 20, right: 40)
+        collection.collectionViewLayout = layout
     }
     
     func loadData() {
@@ -68,74 +86,41 @@ class HomeController: UIViewController {
 
 extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == self.collection1 {
-            viewModel.category.count
+        if viewModel.isSearchActive {
+            viewModel.searchedCar.count
         } else {
-            if viewModel.isSearchActive {
-                viewModel.searchedCar.count
-            } else {
-                viewModel.cars.count
-            }
+            viewModel.cars.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == self.collection1 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Collection1Cell", for: indexPath) as! Collection1Cell
-            cell.configure(image: viewModel.category[indexPath.row].image ?? "",
-                           name: viewModel.category[indexPath.row].name ?? "",
-                           size: viewModel.category[indexPath.row].size ?? "")
-            return cell
-        } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Collection2Cell", for: indexPath) as! Collection2Cell
-            if viewModel.isSearchActive {
-                cell.configure(brand: viewModel.searchedCar[indexPath.row].category ?? "",
-                               model: viewModel.searchedCar[indexPath.row].name ?? "",
-                               carPrice: viewModel.searchedCar[indexPath.row].price ?? "",
-                               engine: viewModel.searchedCar[indexPath.row].engine ?? "",
-                               image: viewModel.searchedCar[indexPath.row].image ?? "")
-            } else {
-                cell.configure(brand: viewModel.cars[indexPath.row].category ?? "",
-                               model: viewModel.cars[indexPath.row].name ?? "",
-                               carPrice: viewModel.cars[indexPath.row].price ?? "",
-                               engine: viewModel.cars[indexPath.row].engine ?? "",
-                               image: viewModel.cars[indexPath.row].image ?? "")
-            }
+        if viewModel.isSearchActive {
+            cell.configure(brand: viewModel.searchedCar[indexPath.row].category ?? "",
+                           model: viewModel.searchedCar[indexPath.row].name ?? "",
+                           carPrice: viewModel.searchedCar[indexPath.row].price ?? "",
+                           engine: viewModel.searchedCar[indexPath.row].engine ?? "",
+                           image: viewModel.searchedCar[indexPath.row].image ?? "")
+        } else {
+            cell.configure(brand: viewModel.cars[indexPath.row].category ?? "",
+                           model: viewModel.cars[indexPath.row].name ?? "",
+                           carPrice: viewModel.cars[indexPath.row].price ?? "",
+                           engine: viewModel.cars[indexPath.row].engine ?? "",
+                           image: viewModel.cars[indexPath.row].image ?? "")
+        }
             return cell
         }
-    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView == self.collection1 {
-            .init(width: collectionView.frame.width / 3, height: 150)
-        } else {
-            .init(width: collectionView.frame.width / 1 - 80, height: 380)
+            .init(width: collectionView.frame.width / 1 - 80, height: 350)
         }
-    }
-}
-
-extension HomeController: UISearchBarDelegate {
     
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.isSearchActive = false
-        collection1.isHidden = false
-        collection1.reloadData()
-        collection2.reloadData()
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! HeaderView
+        return header
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.isSearchActive = true
-        collection1.isHidden = true
-        if searchText.isEmpty {
-            collection2.reloadData()
-        } else {
-            viewModel.searchedCar = viewModel.cars.filter({ $0.category?.contains(searchText) ?? false })
-            collection2.reloadData()
-        }
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.isSearchActive = true
-        collection1.isHidden = true
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        .init(width: view.frame.size.width, height: 200)
     }
 }
