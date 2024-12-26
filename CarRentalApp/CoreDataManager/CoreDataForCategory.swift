@@ -20,7 +20,6 @@ class CoreDataForCategory {
         do {
             let data = try context.fetch(CategoryList.fetchRequest())
             completion(data)
-//            collection.reloadData()
         } catch {
             print(error.localizedDescription)
         }

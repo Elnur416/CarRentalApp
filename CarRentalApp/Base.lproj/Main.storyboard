@@ -270,10 +270,10 @@
             </objects>
             <point key="canvasLocation" x="-1667.1641791044776" y="458.58123569794049"/>
         </scene>
-        <!--View Controller-->
+        <!--Account Controller-->
         <scene sceneID="68h-Dr-q1o">
             <objects>
-                <viewController id="h45-6R-Ti8" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AccountController" id="h45-6R-Ti8" customClass="AccountController" customModule="CarRentalApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="M4A-6i-nGc">
                         <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -318,6 +318,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="BDn-Hv-Jk7"/>
+                    <connections>
+                        <outlet property="emailTxt" destination="JMO-Se-VzV" id="O2e-5s-O6p"/>
+                        <outlet property="fullnameTxt" destination="TEB-vu-Wga" id="jf8-s8-clZ"/>
+                        <outlet property="phoneTxt" destination="VdU-sl-w31" id="ljD-Pk-u7t"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Y4q-sj-TZM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
