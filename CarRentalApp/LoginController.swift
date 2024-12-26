@@ -31,7 +31,7 @@ class LoginController: UIViewController {
         }
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
         guard let sceneDelegate = windowScene.delegate as? SceneDelegate else { return }
-        sceneDelegate.homeRoot()
+        sceneDelegate.tabRoot()
         manager.setValue(value: true, key: .isLoggedIn)
     }
     

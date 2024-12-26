@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         if manager.getBool(key: .isLoggedIn) {
-            homeRoot()
+            tabRoot()
         } else {
             loginRoot()
         }
@@ -32,9 +32,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
-    func homeRoot() {
-        let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "\(HomeController.self)") as! HomeController
-        window?.rootViewController = UINavigationController(rootViewController: controller)
+    
+    func tabRoot() {
+        let tabBar = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tabBar")
+        window?.rootViewController = tabBar
         window?.makeKeyAndVisible()
     }
     

@@ -21,12 +21,12 @@ class Collection2Cell: UICollectionViewCell {
         
         view.layer.cornerRadius = 20
     }
-
-    func configure(brand: String, model: String, carPrice: String, engine: String, image: String) {
-        brandName.text = brand
-        modelName.text = model
-        price.text = carPrice
-        engineModel.text = engine
-        carImage.image = UIImage(named: image)
+    
+    func configure(data: CarList) {
+        brandName.text = data.brand
+        modelName.text = data.name
+        price.text = data.price
+        engineModel.text = data.engine
+        carImage.image = UIImage(named: data.image ?? "")
     }
 }

@@ -17,6 +17,8 @@ class HomeViewModel {
     let manager = UserDefaultsManager()
     var isSearchActive: Bool = false
     var searchedCar = [CarList]()
+    var carsForCategory = [CarList]()
+    var selectedCategory: String?
     
     func getCategoryData() {
             managerCategory.fetchData(completion: { data in
@@ -28,6 +30,14 @@ class HomeViewModel {
             managerCar.fetchData(completion: { data in
                 self.cars = data
             })
+    }
+    
+    func getCarDataForCategory(category: String) {
+        if selectedCategory == "All Cars" {
+            self.carsForCategory = cars
+        } else {
+            carsForCategory = cars.filter({ $0.category?.contains(selectedCategory ?? "") ?? false})
+        }
     }
     
     func loadData() {

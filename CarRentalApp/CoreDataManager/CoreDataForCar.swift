@@ -20,7 +20,6 @@ class CoreDataForCar {
         do {
             let data = try context.fetch(CarList.fetchRequest())
             completion(data)
-//            collection.reloadData()
         } catch {
             print(error.localizedDescription)
         }
@@ -32,7 +31,7 @@ class CoreDataForCar {
         model.image = carModel.image
         model.price = carModel.price
         model.engine = carModel.engine
-        model.brand = carModel.engine
+        model.brand = carModel.brand
         model.category = carModel.category?.name
         do {
             try context.save()
