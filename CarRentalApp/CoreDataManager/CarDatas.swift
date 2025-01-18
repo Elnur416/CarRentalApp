@@ -14,11 +14,6 @@ class CarDatas {
    
     func loadData() {
         //        categories
-        let category = CategoryModel(name: "All Cars",
-                                     image: "allCars",
-                                     size: "12")
-        categoryData.saveData(categoryModel: category)
-        
         let category1 = CategoryModel(name: "Sedan",
                                       image: "sedan",
                                       size: "2")

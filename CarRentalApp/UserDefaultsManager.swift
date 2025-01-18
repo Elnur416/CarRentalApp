@@ -11,7 +11,6 @@ class UserDefaultsManager {
     enum UserDefaultsTypes: String {
         case isDataLoaded = "dataLoaded"
         case isLoggedIn = "loggedIn"
-        case isCategorySelected = "categorySelected"
     }
     
     func setValue(value: Any, key: UserDefaultsTypes) {

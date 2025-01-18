@@ -2,7 +2,7 @@
 //  CategoryList+CoreDataProperties.swift
 //  CarRentalApp
 //
-//  Created by Elnur Mammadov on 22.12.24.
+//  Created by Elnur Mammadov on 30.12.24.
 //
 //
 
@@ -19,6 +19,7 @@ extension CategoryList {
     @NSManaged public var image: String?
     @NSManaged public var name: String?
     @NSManaged public var size: String?
+    @NSManaged public var isSelected: Bool
 
 }
 

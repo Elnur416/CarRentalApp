@@ -12,7 +12,6 @@ class HomeController: UIViewController {
     @IBOutlet weak var searchTxt: UITextField!
     @IBOutlet weak var collection: UICollectionView!
     
- 
     let viewModel = HomeViewModel()
     
     override func viewDidLoad() {
@@ -21,6 +20,7 @@ class HomeController: UIViewController {
         loadData()
         configureLayout()
         viewModel.getCarData()
+        viewModel.getCategoryData()
         searchConfigure()
     }
     
@@ -87,38 +87,40 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate, 
         if viewModel.isSearchActive {
             viewModel.searchedCar.count
         } else {
-            if viewModel.manager.getBool(key: .isCategorySelected) {
-                viewModel.carsForCategory.count
-            } else {
+            if viewModel.selectedCategory == nil {
                 viewModel.cars.count
+            } else {
+                viewModel.carsForCategory.count
             }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Collection2Cell", for: indexPath) as! Collection2Cell
-            if viewModel.isSearchActive {
-                cell.configure(data: viewModel.searchedCar[indexPath.row])
+        if viewModel.isSearchActive {
+            cell.configure(data: viewModel.searchedCar[indexPath.row])
+        } else {
+            if viewModel.selectedCategory == nil {
+                cell.configure(data: viewModel.cars[indexPath.row])
             } else {
-                if viewModel.manager.getBool(key: .isCategorySelected) {
-                    cell.configure(data: viewModel.carsForCategory[indexPath.row])
-                } else {
-                    cell.configure(data: viewModel.cars[indexPath.row])
-                }
+                cell.configure(data: viewModel.carsForCategory[indexPath.row])
             }
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            .init(width: collectionView.frame.width / 1 - 80, height: 350)
-        }
+        .init(width: collectionView.frame.width / 1 - 80, height: 350)
+    }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! HeaderView
+        header.configure(categories: viewModel.category)
         header.onCategory = { selectedCategory in
             self.viewModel.selectedCategory = selectedCategory
             self.viewModel.getCarDataForCategory(category: self.viewModel.selectedCategory!)
             self.collection.reloadData()
+            
         }
         return header
     }

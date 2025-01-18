@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Collection1Cell: UICollectionViewCell {
+class HeaderCell: UICollectionViewCell {
     
     @IBOutlet weak var view: UIView!
     @IBOutlet weak var carImage: UIImageView!
@@ -21,10 +21,15 @@ class Collection1Cell: UICollectionViewCell {
         view.layer.cornerRadius = 20
     }
     
-    func configure(image: String, name: String, size: String) {
-        carImage.image = UIImage(named: image)
-        categoryName.text = name
-        categorySize.text = size
+    func configure(category: CategoryList) {
+        carImage.image = UIImage(named: category.image ?? "")
+        categoryName.text = category.name
+        categorySize.text = category.size
+        configureView(isSelected: category.isSelected)
+    }
+    
+    func configureView(isSelected: Bool) {
+        view.backgroundColor = isSelected ? .systemBlue : .white
     }
 }
 

@@ -11,9 +11,9 @@ class HeaderView: UICollectionReusableView {
     
     @IBOutlet weak var collection: UICollectionView!
     
-    let viewModel = HomeViewModel()
+    let manager = UserDefaultsManager()
+    var categories = [CategoryList]()
     var onCategory: ((String) -> Void)?
-    
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -21,7 +21,7 @@ class HeaderView: UICollectionReusableView {
         collection.dataSource = self
         collection.delegate = self
         collection.register(UINib(nibName: "Collection1Cell", bundle: nil), forCellWithReuseIdentifier: "Collection1Cell")
-        backgroundColor = .secondarySystemBackground
+        
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 150, height: 150)
         layout.minimumLineSpacing = 20
@@ -29,23 +29,22 @@ class HeaderView: UICollectionReusableView {
         layout.scrollDirection = .horizontal
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         collection.collectionViewLayout = layout
-        
-        viewModel.getCategoryData()
     }
     
+    func configure(categories: [CategoryList]) {
+        self.categories = categories
+    }
 }
 
 //MARK: - DataSource and Delegate
 extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.category.count
+        categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Collection1Cell", for: indexPath) as! Collection1Cell
-        cell.configure(image: viewModel.category[indexPath.row].image ?? "",
-                       name: viewModel.category[indexPath.row].name ?? "",
-                       size: viewModel.category[indexPath.row].size ?? "")
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Collection1Cell", for: indexPath) as! HeaderCell
+        cell.configure(category: categories[indexPath.row])
         return cell
     }
     
@@ -54,19 +53,12 @@ extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collection.cellForItem(at: indexPath) as? Collection1Cell {
-            cell.view.backgroundColor = .systemBlue
+        for (index, _) in categories.enumerated() {
+            categories[index].isSelected = index == indexPath.item ? true : false
         }
-        let selectedCategory = viewModel.category[indexPath.row].name ?? ""
+        collection.reloadData()
+        
+        let selectedCategory = categories[indexPath.row].name ?? ""
         onCategory?(selectedCategory)
-        viewModel.manager.setValue(value: true, key: .isCategorySelected)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? Collection1Cell {
-            cell.view.backgroundColor = .white
-        }
-    }
-    
-
 }
