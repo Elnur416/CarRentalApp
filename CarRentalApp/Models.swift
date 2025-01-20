@@ -21,5 +21,5 @@ struct CategoryModel: Codable {
     let name: String?
     let image: String?
     let size: String?
-    var isSelected: Bool = false
+//    var isSelected: Bool = false
 }

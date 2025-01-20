@@ -33,11 +33,7 @@ class HomeViewModel {
     }
     
     func getCarDataForCategory(category: String) {
-        if selectedCategory == "All Cars" {
-            self.carsForCategory = cars
-        } else {
             carsForCategory = cars.filter({ $0.category?.contains(selectedCategory ?? "") ?? false})
-        }
     }
     
     func loadData() {
